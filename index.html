@@ -2320,6 +2320,33 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
   };
   U.$ = function (s, r) { return (r || document).querySelector(s); };
 
+  /* ---------- 설치용 앱 주소 (GitHub Pages 공개판) ---------- */
+  U.APP_URL = 'https://songhyeoggeun763-byte.github.io/paprika-app/';
+  U.appUrlCard = function () {
+    var cloud = !S.demo && Store.mode === 'cloud';
+    return '<section class="card stack"><h2>설치용 앱 주소</h2>' +
+      '<a href="' + esc(U.APP_URL) + '" target="_blank" rel="noopener" style="word-break:break-all;font-weight:700">' + esc(U.APP_URL) + '</a>' +
+      '<p class="small">로그인 없이 열리고, 한 번 연 뒤에는 인터넷 없이도 열립니다. 폰은 브라우저 메뉴의 "홈 화면에 추가", PC는 주소창의 설치 단추로 설치합니다. 자료는 기기마다 따로 저장됩니다.' +
+      (cloud ? ' 이 claude.ai 페이지의 공유 자료와는 이어지지 않으니, 아래 "전체 백업 내려받기"로 받은 파일을 그 앱의 "백업 복원"으로 옮기세요.' : '') + '</p>' +
+      '<div class="row"><button type="button" class="btn grow" data-act="copyAppUrl">주소 복사</button><button type="button" class="btn grow" data-act="shareAppUrl">공유</button></div></section>';
+  };
+  U.A.copyAppUrl = function () {
+    var fail = function () { U.toast('복사하지 못했습니다. 주소를 길게 눌러 복사하세요.', 'bad'); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(U.APP_URL).then(function () { U.toast('앱 주소를 복사했습니다.'); }, fail);
+      else fail();
+    } catch (e) { fail(); }
+  };
+  U.A.shareAppUrl = function () {
+    try {
+      if (navigator.share) {
+        navigator.share({ title: '파프리카 방제수첩', url: U.APP_URL }).catch(function (e) { if (!e || e.name !== 'AbortError') U.A.copyAppUrl(); });
+        return;
+      }
+    } catch (e) { /* 공유 창을 열 수 없는 화면 */ }
+    U.A.copyAppUrl();
+  };
+
   var ICONS = {
     spray: '<path d="M9 3h6v4H9zM8 7h8l1 3v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V10z"/><path d="M12 12v5M9.5 14.5h5"/>',
     list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
@@ -2685,6 +2712,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     if (belt) body += '<section class="stack" style="gap:6px"><h2>최근 방제 작용기작</h2>' + belt + '<div class="legend"><span><i class="key" style="background:var(--fr)"></i>살균 FRAC</span><span><i class="key" style="background:var(--ir)"></i>살충 IRAC</span></div></section>';
     if (warn.length) body += '<section class="stack" style="gap:6px"><h2>저항성 관리 주의</h2>' + warn.map(function (w) { return '<div class="issue ' + (w.level === 'bad' ? 'block' : 'warn') + '">' + esc(w.text) + '</div>'; }).join('') + '<button type="button" class="linkish" data-act="histTab" data-tab="analysis">이력 분석 보기</button></section>';
     body += '<p class="small muted">약제 자료는 농약안전정보시스템 ' + esc(PE.REF.meta.psisDate) + ' 조회본입니다. 실시간 연동이 아닙니다. <button type="button" class="linkish" data-act="go" data-to="settings">자료 출처</button></p>';
+    body += '<p class="small">설치용 앱 주소: <a href="' + esc(U.APP_URL) + '" target="_blank" rel="noopener" style="word-break:break-all">' + esc(U.APP_URL.replace(/^https:\/\//, '').replace(/\/$/, '')) + '</a> <button type="button" class="linkish" data-act="copyAppUrl">복사</button></p>';
     body += '</div>';
     return { title: '파프리카 방제수첩', body: body };
   };
@@ -3980,7 +4008,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     var meta = PE.REF.meta;
     var saveMode = S.demo ? '예시 모드입니다. 저장되지 않습니다.' : Store.note;
     var houses = (st.houses || []).map(function (h, i) { return '<button type="button" class="chip sm" data-act="houseDel" data-i="' + i + '">' + esc(h) + ' ' + U.ic('no').replace('class="ic"', 'class="ic" style="width:16px;height:16px"') + '</button>'; }).join('');
-    var body = '<div class="stack-lg"><section class="card stack"><h2>재배동</h2><div class="row">' + (houses || '<span class="muted small">등록된 재배동이 없습니다.</span>') + '</div><div class="row"><input class="input grow" style="flex:1 1 140px;width:auto" id="houseIn" placeholder="예: 1동" autocomplete="off"><button type="button" class="btn" data-act="houseAdd">추가</button></div></section>' +
+    var body = '<div class="stack-lg">' + U.appUrlCard() + '<section class="card stack"><h2>재배동</h2><div class="row">' + (houses || '<span class="muted small">등록된 재배동이 없습니다.</span>') + '</div><div class="row"><input class="input grow" style="flex:1 1 140px;width:auto" id="houseIn" placeholder="예: 1동" autocomplete="off"><button type="button" class="btn" data-act="houseAdd">추가</button></div></section>' +
       '<section class="card stack"><h2>작기 시작일</h2><p class="small">사용 횟수와 FRAC 상한을 이 날짜부터 셉니다. 정식일을 넣으세요.</p><input class="input" type="date" id="cycleIn" data-ch="cycle" value="' + esc(st.cycleStart || '') + '"></section>' +
       '<section class="card stack"><h2>저장 위치</h2><p>' + esc(saveMode) + '</p><div class="row"><button type="button" class="btn grow" data-act="backup">전체 백업 내려받기</button><label class="btn grow">백업 복원<input type="file" id="restoreFile" data-ch="restore" accept=".json" hidden></label></div></section>' +
       '<section class="card stack"><h2>우리 방제 엑셀</h2><p class="small">' + (U.team() ? esc(U.team().meta.file || '') + ' · ' + esc(U.team().meta.importedAt || '') + ' 반영' : '아직 올리지 않았습니다.') + ' 엑셀을 고친 뒤 다시 올리면 수량과 리스트 값이 바뀝니다.</p><div class="row"><label class="btn grow">엑셀 다시 올리기<input type="file" id="teamFile" data-ch="histFile" accept=".xlsx,.xls" hidden></label><button type="button" class="btn grow" data-act="go" data-to="listcheck">리스트 대조 결과</button></div></section>' +
