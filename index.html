@@ -3046,7 +3046,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     function row(label, s) {
       var items = (s.items || []).filter(function (it) { return PE.itemParts(it).some(function (x) { return x.sys === (label === '살균' ? 'FRAC' : 'IRAC'); }); });
       return '<div class="stack" style="gap:2px"><span class="small muted">직전 ' + label + ' 방제 · ' + U.dateK(s.date) + ' · ' + PE.daysBetween(s.date, p.date) + '일 전</span>' +
-        items.map(function (it) { return '<div class="row"><b>' + esc(it.brand) + '</b>' + U.itemChips(it) + '</div>'; }).join('') + '</div>';
+        items.map(function (it) { return '<div class="row"><b>' + esc(it.brand) + '</b>' + (it.use ? U.useChip(it.use) : '') + U.itemChips(it) + '</div>'; }).join('') + '</div>';
     }
     var html = '';
     if (f) html += row('살균', f);
@@ -3054,7 +3054,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     if (!f && !i) html += '<p class="small">기록된 방제가 없습니다. 지난주에 쓴 약이 있으면 아래에서 고르세요.</p>';
     if (p.assumed.length) {
       html += '<div class="stack" style="gap:4px"><span class="small muted">직접 고른 지난주 약 (7일 전으로 계산)</span>' + p.assumed.map(function (it, n) {
-        return '<div class="row"><b>' + esc(it.brand) + '</b>' + U.itemChips(it) + '<button type="button" class="linkish small" data-act="dropAssumed" data-i="' + n + '">빼기</button></div>';
+        return '<div class="row"><b>' + esc(it.brand) + '</b>' + (it.use ? U.useChip(it.use) : '') + U.itemChips(it) + '<button type="button" class="linkish small" data-act="dropAssumed" data-i="' + n + '">빼기</button></div>';
       }).join('') + '</div>';
     }
     return html;
@@ -3784,12 +3784,27 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     var list = mixProducts();
     var D = U.D();
     var body = '<div class="stack-lg"><section class="stack"><h2>함께 쓸 농약을 고르세요</h2>';
-    body += list.length ? '<div class="row">' + list.map(function (p, i) { return '<button type="button" class="chip sm on" data-act="mixDrop" data-i="' + i + '">' + esc(p.brand) + ' ' + U.ic('no').replace('class="ic"', 'class="ic" style="width:16px;height:16px"') + '</button>'; }).join('') + '</div>' : '';
+    // 고른 약: 제품 카드와 같은 분류 배지를 붙인다
+    body += list.length ? '<div class="stack" style="gap:8px">' + list.map(function (p, i) {
+      return '<div class="between card" style="padding:10px 12px;align-items:center"><div class="row"><b>' + esc(p.brand) + '</b>' + U.useChip(p.use) + U.moaChips(PE.partsOf(p)) + '</div><button type="button" class="btn small" data-act="mixDrop" data-i="' + i + '">빼기</button></div>';
+    }).join('') + '</div>' : '';
     body += '<input class="input" id="mixQ" data-in="mixQ" placeholder="제품명 검색" value="' + esc(S.mix.q) + '" autocomplete="off"><div id="mixSug">' + mixSug() + '</div>';
     var usedNames = {};
     D.sprays.forEach(function (s) { (s.items || []).forEach(function (i) { usedNames[i.brand] = 1; }); });
     var own = U.inventory().filter(function (p) { return p.owned !== false && !S.mix.sel.some(function (x) { return x.id === p.id; }); }).sort(function (a, b) { return (usedNames[b.brand] ? 1 : 0) - (usedNames[a.brand] ? 1 : 0); });
-    if (own.length && !S.mix.q) body += '<div class="stack" style="gap:4px"><span class="small muted">보유 농약</span><div class="row">' + own.slice(0, 24).map(function (p) { return '<button type="button" class="chip sm" data-act="mixAdd" data-id="' + esc(p.id) + '">' + esc(p.brand) + '</button>'; }).join('') + '</div></div>';
+    // 보유 농약 고르기: 분류별로 묶고, 묶음 머리에 분류 배지(색 + 분류명)를 단다
+    if (own.length && !S.mix.q) {
+      var shown = own.slice(0, 24);
+      var groups = [];
+      shown.forEach(function (p) {
+        var g = groups.filter(function (x) { return x.use === (p.use || ''); })[0];
+        if (!g) { g = { use: p.use || '', items: [] }; groups.push(g); }
+        g.items.push(p);
+      });
+      body += '<div class="stack" style="gap:10px"><span class="field-label">보유 농약</span>' + groups.map(function (g) {
+        return '<div class="stack" style="gap:6px"><div class="row">' + U.useChip(g.use) + '</div><div class="row">' + g.items.map(function (p) { return '<button type="button" class="chip sm" data-act="mixAdd" data-id="' + esc(p.id) + '">' + esc(p.brand) + '</button>'; }).join('') + '</div></div>';
+      }).join('') + '</div>';
+    }
     body += '</section>';
     if (list.length >= 2) {
       var m = PE.checkMix(list, D.mixes);
