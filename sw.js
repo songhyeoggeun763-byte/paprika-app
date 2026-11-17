@@ -1,6 +1,6 @@
 /* 오프라인용 서비스 워커. 한 번 연 뒤에는 인터넷 없이 앱을 연다.
  * __CACHE__ 는 빌드 때 앱 내용의 해시로 바뀐다. 새 버전을 올리면 이전 저장본을 지운다. */
-var CACHE = 'paprika-aff8f3371d';
+var CACHE = 'paprika-c052c8e16d';
 var CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 // 엑셀 읽기·쓰기에 쓰는 라이브러리. 앱(src/excel.js)이 같은 주소에서 불러온다.
 var XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';

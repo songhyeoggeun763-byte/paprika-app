@@ -107,7 +107,10 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 /* 파프리카 방제수첩 디자인 토큰 — Midnight Slate.
    레이아웃: 폰은 한 열과 아래 탭 막대, PC는 왼쪽 메뉴와 가운데 본문(최대 760px).
    위계는 굵기·크기·여백으로 만들고, 경계는 1px 선으로만 나눈다. 그라데이션·큰 그림자·과한 둥글림은 쓰지 않는다.
-   색 규칙: 바탕과 글자는 슬레이트, 주황은 주요 동작과 강조 상호작용에만, 초록은 '완료' 상태에만.
+   색 규칙: 바탕과 글자는 슬레이트, 주황은 주요 동작과 강조 상호작용에만, 상태 초록은 '완료'에만.
+   작물보호제 분류 색은 현장 분류 체계를 따른다: 살균제 분홍, 살충제 초록, 제초제 노랑, 생장조정제 파랑.
+   분류 색은 배지 안의 작은 뚜껑 표시와 달력 점, 도표 막대에만 쓰고, 언제나 분류명 글자와 함께 쓴다.
+   실제 제품 뚜껑색은 따로 저장하고 '실제 뚜껑' 글자와 네모 견본으로 표시해 분류 색과 섞이지 않게 한다.
    상태 글자는 햇빛에서도 읽히도록 흰 바탕과 옅은 바탕 모두에서 4.5:1 이상인 진한 단계(-ink)를 쓴다.
    보조 글자 #8B929A는 흰 바탕 대비가 3.2:1이라 자리표시·범례 같은 덜 중요한 글자에만 쓰고,
    읽어야 하는 보조 글자는 --ink-2(7.4:1)를 쓴다. */
@@ -140,9 +143,12 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   --info: #527CB8;
   --info-ink: #3A6197;
   --info-soft: #E7EEF8;
-  --fr: #6E56C8;
-  --ir: #C24F87;
-  --on-series: #FFFFFF;
+  --cat-fungi: #E2589A;   /* 살균제 분홍 */
+  --cat-insect: #2E9C4E;  /* 살충제 초록 */
+  --cat-herb: #F0BE1E;    /* 제초제 노랑: 흰 바탕에서 옅어 테두리를 함께 쓴다 */
+  --cat-pgr: #2F6FD3;     /* 생장조정제 파랑 */
+  --cat-other: #FFFFFF;   /* 기타 */
+  --cap-ring: rgba(32, 42, 53, .30);
   --scrim: rgba(16, 20, 24, .48);
   --shadow-sheet: 0 12px 40px rgba(16, 20, 24, .18);
 
@@ -173,7 +179,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     --doing: #E0AE4F; --doing-ink: #E6B456; --doing-soft: #3A2E14;
     --alert: #EE726E; --alert-ink: #F07C77; --alert-soft: #3D1F1F; --alert-strong: #AE3833;
     --info: #7EA2D8; --info-ink: #86A9DC; --info-soft: #1C2A3D;
-    --fr: #8670E0; --ir: #D2669A; --on-series: #101418;
+    --cat-fungi: #F07AB0; --cat-insect: #4DBF6C; --cat-herb: #F5CB45; --cat-pgr: #5C93E6; --cat-other: #E6E8EA; --cap-ring: rgba(255, 255, 255, .30);
     --scrim: rgba(0, 0, 0, .6); --shadow-sheet: 0 12px 40px rgba(0, 0, 0, .5);
     color-scheme: dark;
   }
@@ -187,7 +193,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   --doing: #E0AE4F; --doing-ink: #E6B456; --doing-soft: #3A2E14;
   --alert: #EE726E; --alert-ink: #F07C77; --alert-soft: #3D1F1F; --alert-strong: #AE3833;
   --info: #7EA2D8; --info-ink: #86A9DC; --info-soft: #1C2A3D;
-  --fr: #8670E0; --ir: #D2669A; --on-series: #101418;
+  --cat-fungi: #F07AB0; --cat-insect: #4DBF6C; --cat-herb: #F5CB45; --cat-pgr: #5C93E6; --cat-other: #E6E8EA; --cap-ring: rgba(255, 255, 255, .30);
   --scrim: rgba(0, 0, 0, .6); --shadow-sheet: 0 12px 40px rgba(0, 0, 0, .5);
   color-scheme: dark;
 }
@@ -315,16 +321,21 @@ ul.plain li + li { margin-top: 4px; }
 .chip.sm { padding: 0 12px; }
 
 .moa, .use, .pill, .need { display: inline-flex; align-items: center; gap: 6px; min-height: var(--h-badge); padding: 0 8px; border-radius: var(--r-sm); font-size: var(--fs-badge); font-weight: 600; line-height: 1.2; white-space: nowrap; font-variant-numeric: tabular-nums; }
-/* 작용기작: 살균(FRAC)은 네모, 살충(IRAC)은 동그라미 표시로 색과 모양을 함께 쓴다 */
+/* 작용기작 코드: 분류 색을 쓰지 않는 중립 표시. FRAC·IRAC 글자로 구분한다 */
 .moa { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
-.moa::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 2px; background: var(--ink-3); }
-.moa.f::before { background: var(--fr); }
-.moa.i::before { background: var(--ir); border-radius: 50%; }
-.use { background: var(--surface-2); color: var(--ink); }
-.use::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 2px; background: var(--ink-3); }
-.use.살균::before { background: var(--fr); }
-.use.살충::before { background: var(--ir); border-radius: 50%; }
-.use.균충::before { background: linear-gradient(90deg, var(--fr) 50%, var(--ir) 50%); }
+/* 작물보호제 분류: 중립 배지 + 분류 색 뚜껑 표시 + 분류명 */
+.use { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); padding-left: 7px; }
+.cap { display: inline-block; flex: none; width: 13px; height: 9px; border-radius: 4px 4px 1.5px 1.5px; background: var(--c, var(--ink-3)); box-shadow: inset 0 0 0 1px var(--cap-ring), inset 0 -2px 0 rgba(0, 0, 0, .16); }
+.cat-fungi { --c: var(--cat-fungi); }
+.cat-insect { --c: var(--cat-insect); }
+.cat-herb { --c: var(--cat-herb); }
+.cat-pgr { --c: var(--cat-pgr); }
+.cat-other { --c: var(--cat-other); }
+.cat-fi .cap, .cap.cat-fi, .dot.cat-fi { background: linear-gradient(90deg, var(--cat-fungi) 50%, var(--cat-insect) 50%); }
+/* 실제 제품 뚜껑색: 분류 색과 다른 정보. '실제 뚜껑' 글자와 네모 견본으로 표시 */
+.capreal { display: inline-flex; align-items: center; gap: 6px; min-height: var(--h-badge); padding: 0 8px; border-radius: var(--r-sm); background: var(--surface-2); color: var(--ink); font-size: var(--fs-badge); font-weight: 600; white-space: nowrap; }
+.swatch { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--sw, transparent); box-shadow: inset 0 0 0 1px var(--cap-ring); }
+.capreal.diff { background: var(--doing-soft); color: var(--doing-ink); }
 /* 상태: 점(또는 체크)과 글자를 함께 쓴다. 색만으로 뜻을 전하지 않는다. */
 .pill::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: currentColor; }
 .pill.ok { background: var(--info-soft); color: var(--info-ink); }
@@ -405,9 +416,8 @@ details.more[open] > summary::after { transform: rotate(-135deg); }
 .day.today b { background: var(--accent); color: var(--on-accent); font-weight: 700; }
 .day.sel { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .dots { display: flex; flex-wrap: wrap; gap: 3px; }
-.dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; background: var(--ink-3); }
-.dot.f { background: var(--fr); }
-.dot.i { background: var(--ir); border-radius: 50%; }
+/* 달력 점: 그날 뿌린 약의 분류 색 뚜껑. 아래 범례에 분류명이 있다 */
+.dot { width: 10px; height: 7px; border-radius: 3px 3px 1px 1px; display: inline-block; background: var(--c, var(--ink-3)); box-shadow: inset 0 0 0 1px var(--cap-ring); }
 .rec-row { display: flex; flex-direction: column; gap: 6px; width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px 16px; color: var(--ink); }
 .rec-row:hover { border-color: var(--line-strong); }
 .rec-row .between > b { font-size: 1.0625rem; }
@@ -418,13 +428,13 @@ details.more[open] > summary::after { transform: rotate(-135deg); }
 .bar-label { font-size: var(--fs-sm); min-width: 0; }
 .bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .bar { height: 14px; border-radius: 0 4px 4px 0; background: var(--ink-2); display: block; flex: none; min-width: 3px; }
-.bar.f { background: var(--fr); }
-.bar.i { background: var(--ir); }
+.bar.f { background: var(--cat-fungi); }
+.bar.i { background: var(--cat-insect); }
 .bar-n { font-size: var(--fs-sm); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--fs-cap); font-weight: 500; color: var(--ink-2); }
-.key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--ink-3); }
-.key.f { background: var(--fr); }
-.key.i { background: var(--ir); border-radius: 50%; }
+.key { display: inline-block; width: 12px; height: 9px; border-radius: 4px 4px 1.5px 1.5px; margin-right: 6px; vertical-align: 0; background: var(--ink-3); box-shadow: inset 0 0 0 1px var(--cap-ring); }
+.key.f { background: var(--cat-fungi); }
+.key.i { background: var(--cat-insect); }
 .stacked { display: flex; gap: 2px; height: 16px; border-radius: 4px; overflow: hidden; background: var(--surface-2); }
 .stacked span { display: block; min-width: 4px; }
 .e-good { background: var(--info); }
@@ -432,9 +442,10 @@ details.more[open] > summary::after { transform: rotate(-135deg); }
 .e-none { background: var(--doing); }
 .e-worse { background: var(--alert); }
 .matrix td.c { text-align: center; }
-.mdot { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; font-size: var(--fs-cap); font-weight: 700; color: var(--on-series); font-variant-numeric: tabular-nums; }
-.mdot.f { background: var(--fr); border-radius: 6px; }
-.mdot.i { background: var(--ir); }
+/* 사용 횟수 칸: 숫자는 글자색, 분류 색은 테두리로만 */
+.mdot { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 13px; font-size: var(--fs-cap); font-weight: 700; color: var(--ink); background: var(--surface); box-shadow: inset 0 0 0 2px var(--ink-3); font-variant-numeric: tabular-nums; }
+.mdot.f { box-shadow: inset 0 0 0 2px var(--cat-fungi); }
+.mdot.i { box-shadow: inset 0 0 0 2px var(--cat-insect); }
 
 /* ---------- 혼용 판정 ---------- */
 .verdict { display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: var(--r-lg); }
@@ -2640,7 +2651,38 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
 
   /* ---------- 표시 조각 ---------- */
   var USE_NAME = { '살균': '살균제', '살충': '살충제', '균충': '살균살충제', '제초': '제초제', '생조': '생장조정제', '기타': '기타' };
-  U.useChip = function (u) { return u ? '<span class="use ' + esc(u) + '">' + esc(USE_NAME[u] || u) + '</span>' : '<span class="need">종류 확인 필요</span>'; };
+  U.useName = function (u) { return USE_NAME[u] || u; };
+
+  /* ---------- 작물보호제 분류 색 ----------
+   * 현장 분류 체계: 살균제 분홍, 살충제 초록, 제초제 노랑, 생장조정제 파랑.
+   * 살균살충제는 두 색을 반씩 쓴다(정해진 색을 확인하지 못함). 그 밖의 종류는 중립 색. */
+  var CAT = { '살균': 'fungi', '살충': 'insect', '균충': 'fi', '제초': 'herb', '생조': 'pgr' };
+  var CAT_CAP = { '살균': ['분홍'], '살충': ['초록'], '균충': ['분홍', '초록'], '제초': ['노랑'], '생조': ['파랑'] };
+  U.catOf = function (u) { return u ? (CAT[u] || 'other') : null; };
+  U.useChip = function (u) {
+    if (!u) return '<span class="need">종류 확인 필요</span>';
+    return '<span class="use cat-' + U.catOf(u) + '"><i class="cap" aria-hidden="true"></i>' + esc(U.useName(u)) + '</span>';
+  };
+  /** 방제 기록의 약 한 줄에서 분류를 정한다. 종류 칸이 비면 작용기작 체계로 짐작한다. */
+  U.itemCat = function (it) {
+    var c = U.catOf(it.use);
+    if (c) return c;
+    var sys = PE.itemParts(it).filter(function (x) { return !x.none; }).map(function (x) { return x.sys; });
+    var f = sys.indexOf('FRAC') >= 0, i = sys.indexOf('IRAC') >= 0;
+    return f && i ? 'fi' : f ? 'fungi' : i ? 'insect' : 'other';
+  };
+  U.CAT_LEGEND = [['fungi', '살균제'], ['insect', '살충제'], ['fi', '살균살충제'], ['herb', '제초제'], ['pgr', '생장조정제'], ['other', '기타·미분류']];
+
+  /* ---------- 실제 제품 뚜껑색: 분류 색과 별개로 저장하고 표시한다 ---------- */
+  U.CAP_COLORS = [['분홍', '#E8649F'], ['초록', '#2E9C4E'], ['노랑', '#F2C230'], ['파랑', '#2F6FD3'], ['빨강', '#D63B33'], ['주황', '#EE7A2E'], ['보라', '#7E57C2'], ['갈색', '#8B5A2B'], ['흰색', '#FFFFFF'], ['검정', '#222222'], ['회색', '#9AA0A6']];
+  U.capHex = function (name) { var c = U.CAP_COLORS.filter(function (x) { return x[0] === name; })[0]; return c ? c[1] : 'transparent'; };
+  U.capDiffers = function (use, cap) { var exp = CAT_CAP[use]; return !!(cap && exp && exp.indexOf(cap) < 0); };
+  U.capOf = function (id) { var raw = U.D().products.filter(function (x) { return x.id === id; })[0]; return raw && raw.capColor ? raw.capColor : ''; };
+  U.capChip = function (cap, use) {
+    if (!cap) return '';
+    var diff = U.capDiffers(use, cap);
+    return '<span class="capreal' + (diff ? ' diff' : '') + '"><i class="swatch" style="--sw:' + U.capHex(cap) + '" aria-hidden="true"></i>실제 뚜껑 ' + esc(cap) + (diff ? ' · 분류 색과 다름' : '') + '</span>';
+  };
   U.moaChip = function (p) {
     if (p.none) return '';
     if (p.unknown) return '<span class="need">작용기작 확인 필요</span>';
@@ -2938,7 +2980,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     body += '<section class="kpis" aria-label="요약"><div class="kpi"><b>' + count + '회</b><span class="small muted">이번 달 방제</span></div>' +
       '<div class="kpi"><b>' + (last ? PE.daysBetween(last.date, t) + '일 전' : '기록 없음') + '</b><span class="small muted">' + (last ? '지난 방제 ' + U.dateK(last.date) : '지난 방제') + '</span></div></section>';
     var belt = U.belt(8);
-    if (belt) body += '<section class="stack" style="gap:8px"><h2>최근 방제 작용기작</h2>' + belt + '<div class="legend"><span><i class="key f"></i>살균 FRAC</span><span><i class="key i"></i>살충 IRAC</span></div></section>';
+    if (belt) body += '<section class="stack" style="gap:8px"><h2>최근 방제 작용기작</h2>' + belt + '</section>';
     if (warn.length) body += '<section class="stack" style="gap:6px"><h2>저항성 관리 주의</h2>' + warn.map(function (w) { return '<div class="issue ' + (w.level === 'bad' ? 'block' : 'warn') + '">' + esc(w.text) + '</div>'; }).join('') + '<button type="button" class="linkish" data-act="histTab" data-tab="analysis">이력 분석 보기</button></section>';
     body += '<p class="small muted">약제 자료는 농약안전정보시스템 ' + esc(PE.REF.meta.psisDate) + ' 조회본입니다. 실시간 연동이 아닙니다. <button type="button" class="linkish" data-act="go" data-to="settings">자료 출처</button></p>';
     body += '<p class="small">설치용 앱 주소: <a href="' + esc(U.APP_URL) + '" target="_blank" rel="noopener" style="word-break:break-all">' + esc(U.APP_URL.replace(/^https:\/\//, '').replace(/\/$/, '')) + '</a> <button type="button" class="linkish" data-act="copyAppUrl">복사</button></p>';
@@ -3029,9 +3071,9 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     if (!q.trim()) return '';
     var r = searchProductsAny(q);
     var rows = r.mine.map(function (p) {
-      return '<button type="button" class="sug" data-act="' + act + '" data-id="' + esc(p.id) + '"><span><b>' + esc(p.brand) + '</b> <span class="small muted">' + esc(p.item || '') + '</span></span><span class="pill plain">보유</span></button>';
+      return '<button type="button" class="sug" data-act="' + act + '" data-id="' + esc(p.id) + '"><span><b>' + esc(p.brand) + '</b> <span class="small muted">' + esc(p.item || '') + '</span></span><span class="row" style="justify-content:flex-end">' + (p.use ? U.useChip(p.use) : '') + '<span class="pill plain">보유</span></span></button>';
     }).concat(r.ref.map(function (p) {
-      return '<button type="button" class="sug" data-act="' + act + '" data-code="' + p.code + '"><span><b>' + esc(p.brand) + '</b> <span class="small muted">' + esc(p.item) + ' · ' + esc(p.company) + '</span></span>' + (p.moa ? '<span class="pill plain">' + esc(p.moa) + '</span>' : '') + '</button>';
+      return '<button type="button" class="sug" data-act="' + act + '" data-code="' + p.code + '"><span><b>' + esc(p.brand) + '</b> <span class="small muted">' + esc(p.item) + ' · ' + esc(p.company) + '</span></span><span class="row" style="justify-content:flex-end">' + (p.use ? U.useChip(p.use) : '') + (p.moa ? '<span class="pill plain">' + esc(p.moa) + '</span>' : '') + '</span></button>';
     }));
     return rows.length ? '<div class="suggest">' + rows.join('') + '</div>' : '<p class="small muted">조회본에서 찾지 못했습니다. 제품명을 확인하세요.</p>';
   }
@@ -3156,6 +3198,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     return '<article class="rec-card' + (picked ? ' picked' : '') + '" data-card="' + esc(p.id) + '">' +
       '<div class="between"><div class="row">' + rankEl + U.useChip(p.use) + '</div>' + U.regPill(c.reg) + '</div>' +
       '<div class="stack" style="gap:2px"><div class="rec-name">' + esc(p.brand) + '</div><div class="small muted">' + esc(p.item || U.aiText(p)) + (p.content ? ' ' + esc(p.content) : '') + (p.company ? ' · ' + esc(p.company) : '') + '</div></div>' +
+      (U.capOf(p.id) ? '<div class="row">' + U.capChip(U.capOf(p.id), p.use) + '</div>' : '') +
       '<div class="small">유효성분: ' + esc(U.aiText(p) || '확인 필요') + (p.team ? ' · ' + (p.owned === false ? '<b>학교 미보유</b>' + (p.buy ? ' (구매 표시)' : '') : '보유 ' + (p.qty === null || p.qty === undefined ? '잔량 확인 필요' : p.qty + '개')) : '') + '</div>' +
       '<div class="row">' + U.moaChips(c.parts) + '</div>' +
       '<div class="row small">방제 가능: ' + cover + '</div>' +
@@ -3295,7 +3338,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     d.houses.forEach(function (h) { if (houses.indexOf(h) < 0) houses.push(h); });
     var items = d.items.map(function (it, i) {
       var known = PE.itemParts(it).some(function (x) { return !x.unknown && !x.none; });
-      return '<div class="card stack" style="gap:8px"><div class="between"><div class="stack" style="gap:2px"><b>' + esc(it.brand) + '</b><div class="row">' + U.itemChips(it) + '</div></div><button type="button" class="btn small" data-act="recDrop" data-i="' + i + '">빼기</button></div>' +
+      return '<div class="card stack" style="gap:8px"><div class="between"><div class="stack" style="gap:6px"><b>' + esc(it.brand) + '</b><div class="row">' + (it.use ? U.useChip(it.use) : '') + U.itemChips(it) + '</div></div><button type="button" class="btn small" data-act="recDrop" data-i="' + i + '">빼기</button></div>' +
         (known ? '' : '<p class="small">작용기작을 모르면 다음 추천의 중복 비교에서 빠집니다.</p>') +
         '<div class="form2"><label class="f small">희석배수<input class="input" id="recDil' + i + '" data-in="recItem" data-i="' + i + '" data-k="dilution" value="' + esc(it.dilution) + '" placeholder="예: 2000배"></label><label class="f small">사용량<input class="input" id="recAmt' + i + '" data-in="recItem" data-i="' + i + '" data-k="amount" value="' + esc(it.amount) + '" placeholder="예: 물 500L에 250g"></label></div></div>';
     }).join('');
@@ -3404,17 +3447,17 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     return list.map(function (p) {
       var pests = PE.pestsOf(p);
       return '<button type="button" class="rec-row" data-act="go" data-to="invDetail" data-id="' + esc(p.id) + '"><div class="between"><b>' + esc(p.brand) + '</b>' + U.regPill(PE.regStatus(p)) + '</div>' +
-        '<div class="small muted">' + esc(p.item || U.aiText(p) || '유효성분 확인 필요') + (p.team && p.owned !== false ? ' · ' + (p.qty === null || p.qty === undefined ? '잔량 확인' : p.qty + '개') : '') + '</div><div class="row" style="margin-top:4px">' + U.useChip(p.use) + U.moaChips(PE.partsOf(p)) + '</div>' +
+        '<div class="small muted">' + esc(p.item || U.aiText(p) || '유효성분 확인 필요') + (p.team && p.owned !== false ? ' · ' + (p.qty === null || p.qty === undefined ? '잔량 확인' : p.qty + '개') : '') + '</div><div class="row" style="margin-top:4px">' + U.useChip(p.use) + U.moaChips(PE.partsOf(p)) + U.capChip(U.capOf(p.id), p.use) + '</div>' +
         (pests.length ? '<div class="small muted" style="margin-top:4px">' + esc(pests.slice(0, 5).join(', ')) + (pests.length > 5 ? ' 외 ' + (pests.length - 5) + '종' : '') + '</div>' : '') + '</button>';
     }).join('');
   }
   U.V.inv = function () {
-    var cats = ['전체', '살균', '살충', '균충', '기타'];
+    var cats = ['전체', '살균', '살충', '균충', '제초', '생조', '기타'];
     var n = U.D().products.filter(function (p) { return p.owned !== false; }).length;
     var body = '<div class="stack"><div class="between"><span class="muted">보유 농약 ' + n + '종</span><button type="button" class="btn small primary" data-act="go" data-to="add">' + U.ic('plus') + '추가</button></div>' +
       '<input class="input" id="invQ" data-in="invQ" placeholder="제품명, 성분, 병해충, 작용기작 검색" value="' + esc(S.inv.q) + '" autocomplete="off">' +
       '<div class="tabs">' + ['보유', '미보유', '확인 필요', '전체'].map(function (c) { return '<button type="button" class="' + (S.inv.own === c ? 'on' : '') + '" data-act="invOwn" data-v="' + c + '">' + c + '</button>'; }).join('') + '</div>' +
-      '<div class="tabs">' + cats.map(function (c) { return '<button type="button" class="' + (S.inv.cat === c ? 'on' : '') + '" data-act="invCat" data-v="' + c + '">' + (c === '전체' ? c : c === '균충' ? '살균살충제' : c === '기타' ? '기타' : c + '제') + '</button>'; }).join('') + '</div>' +
+      '<div class="tabs">' + cats.map(function (c) { return '<button type="button" class="' + (S.inv.cat === c ? 'on' : '') + '" data-act="invCat" data-v="' + c + '">' + (c === '전체' ? c : esc(U.useName(c))) + '</button>'; }).join('') + '</div>' +
       '<div id="invList" class="stack">' + invRows() + '</div></div>';
     return { title: '농약 목록', body: body };
   };
@@ -3429,7 +3472,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     var parts = PE.partsOf(p);
     var body = '<div class="stack"><div class="card stack"><div class="between"><div class="rec-name">' + esc(p.brand) + '</div>' + U.regPill(reg) + '</div>' +
       '<div class="tbl"><table><tbody>' +
-      row('품목명', p.item) + row('유효성분', U.aiText(p)) + row('함량', p.content) + row('농약 종류', p.use) + row('회사', p.company) + row('등록번호', p.regNo) + row('인축독성', p.tox) + row('어독성', p.fish) +
+      row('품목명', p.item) + row('유효성분', U.aiText(p)) + row('함량', p.content) +
+      '<tr><th>농약 종류</th><td>' + U.useChip(p.use) + '</td></tr>' + capRow(p) + row('회사', p.company) + row('등록번호', p.regNo) + row('인축독성', p.tox) + row('어독성', p.fish) +
       '</tbody></table></div><div class="row">' + U.moaChips(parts) + '</div>' +
       parts.filter(function (x) { return x.groupName; }).map(function (x) { return '<p class="small">' + esc(PE.partTag(x)) + ': ' + esc(x.groupName) + (x.moaName ? ' · ' + esc(x.moaName) : '') + (x.sys === 'FRAC' ? ' · 저항성 위험도 ' + esc(x.risk) : '') + '</p>'; }).join('') +
       '<p class="small">' + esc(reg.detail) + U.srcA(reg.source) + '</p>' + (p.note ? '<p>비고: ' + esc(p.note) + '</p>' : '') + '</div>';
@@ -3443,6 +3487,13 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     return { title: '농약 정보', body: body };
     function row(k, v) { return '<tr><th>' + k + '</th><td>' + (v ? esc(v) : '<span class="need">확인 필요</span>') + '</td></tr>'; }
   };
+  /** 실제 제품 뚜껑색 줄. 분류 색과 다르면 무엇이 분류인지 글로 알려 준다. */
+  function capRow(p) {
+    var cap = U.capOf(p.id);
+    if (!cap) return '<tr><th>실제 뚜껑색</th><td><span class="small muted">미등록 · 수정에서 등록할 수 있습니다</span></td></tr>';
+    var note = U.capDiffers(p.use, cap) ? '<p class="small muted" style="margin-top:6px">분류는 "' + esc(U.useName(p.use)) + '"입니다. 뚜껑색은 실제 제품을 찾을 때만 참고하세요.</p>' : '';
+    return '<tr><th>실제 뚜껑색</th><td>' + U.capChip(cap, p.use) + note + '</td></tr>';
+  }
   function listBlock(p) {
     var T = root.PaprikaTeam;
     var d = T.diffs(p);
@@ -3475,13 +3526,14 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
   };
 
   /* ---------- 추가 ---------- */
-  function blankForm() { return { brand: '', ai: '', moa: '', pests: '', crop: '파프리카(단고추류)', use: '', dilution: '', phi: '', times: '', note: '', verified: false, code: null }; }
+  function blankForm() { return { brand: '', ai: '', moa: '', pests: '', crop: '파프리카(단고추류)', use: '', dilution: '', phi: '', times: '', note: '', verified: false, code: null, capColor: '' }; }
   function formFrom(raw) {
     var p = PE.resolve(raw);
     var l = (p.lines || [])[0] || {};
     return {
       brand: p.brand || '', ai: raw.code ? U.aiText(p) : (raw.aiText || ''), moa: p.moa || '', pests: PE.pestsOf(p).join(', '), crop: l.crop || '파프리카(단고추류)', use: p.use || '',
-      dilution: l.dilution || '', phi: l.phiText || '', times: l.timesText || '', note: raw.note || '', verified: raw.verified === 'label', code: raw.code || null
+      dilution: l.dilution || '', phi: l.phiText || '', times: l.timesText || '', note: raw.note || '', verified: raw.verified === 'label', code: raw.code || null,
+      capColor: raw.capColor || ''
     };
   }
   function ownedCodes() { var o = {}; U.D().products.forEach(function (p) { if (p.code) o[p.code] = 1; }); return o; }
@@ -3497,7 +3549,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     return function (r) {
       var parts = PE.partsOf(PE.refProduct(r.code));
       var state = r.paprika ? '<span class="pill ok">파프리카 등록</span>' : '<span class="pill bad">파프리카 미등록</span>';
-      return '<div class="sug"><span class="grow"><b>' + esc(r.brand) + '</b> ' + state + '<br><span class="small muted">' + esc(r.item) + ' · ' + esc(r.company) + '</span><br>' + U.moaChips(parts) + '</span>' +
+      var use = PE.refProduct(r.code).use;
+      return '<div class="sug"><span class="grow stack" style="gap:6px"><span><b>' + esc(r.brand) + '</b> <span class="small muted">' + esc(r.item) + ' · ' + esc(r.company) + '</span></span><span class="row">' + state + (use ? U.useChip(use) : '') + U.moaChips(parts) + '</span></span>' +
         (own[r.code] ? '<span class="pill plain">보유 중</span>' : '<button type="button" class="btn small primary" data-act="addCode" data-code="' + r.code + '">추가</button>') + '</div>';
     };
   }
@@ -3520,26 +3573,37 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
   }
   function manualForm() {
     var f = S.add.form || (S.add.form = blankForm());
-    var useOpts = ['', '살균', '살충', '균충', '기타'].map(function (u) { return '<option value="' + u + '"' + (f.use === u ? ' selected' : '') + '>' + (u === '' ? '선택' : u === '균충' ? '살균살충제' : u === '기타' ? '기타' : u + '제') + '</option>'; }).join('');
+    var useOpts = ['', '살균', '살충', '균충', '제초', '생조', '기타'].map(function (u) { return '<option value="' + u + '"' + (f.use === u ? ' selected' : '') + '>' + (u === '' ? '선택' : esc(U.useName(u))) + '</option>'; }).join('');
     return '<div class="stack">' + (S.add.editId ? '<p class="small muted">보유 목록의 항목을 수정합니다.</p>' : '') +
       field('fBrand', '농약 제품명', 'brand', f.brand) + '<div id="autoBox">' + autoBox() + '</div>' +
-      (f.code ? '<div class="banner"><span>PSIS 제품과 연결돼 있어 등록 정보는 조회본 값을 씁니다. 비고만 바꿀 수 있습니다.</span></div>' + field('fNote', '비고', 'note', f.note) : (
+      (f.code ? '<div class="banner"><span>PSIS 제품과 연결돼 있어 등록 정보는 조회본 값을 씁니다. 비고와 실제 뚜껑색만 바꿀 수 있습니다.</span></div>' + field('fNote', '비고', 'note', f.note) + capPicker(f) : (
         field('fAi', '유효성분', 'ai', f.ai, '여러 성분은 + 로 구분. 공식 성분표에 있으면 작용기작을 자동으로 찾습니다.') + field('fMoa', '작용기작 그룹', 'moa', f.moa, '예: 다3, 4a, FRAC 11, IRAC 4A') + '<div id="aiBox">' + aiBox() + '</div>' +
         field('fPests', '적용 병해충', 'pests', f.pests, '쉼표로 구분') + field('fCrop', '적용 작물', 'crop', f.crop) +
-        '<label class="f">농약 종류<select class="input" id="fUse" data-ch="addUse">' + useOpts + '</select></label>' +
+        '<label class="f">농약 종류<select class="input" id="fUse" data-ch="addUse">' + useOpts + '</select></label>' + capPicker(f) +
         '<div class="form2">' + field('fDil', '희석배수', 'dilution', f.dilution) + field('fPhi', '수확전 사용기한', 'phi', f.phi, '예: 수확3일전') + '</div>' + field('fTimes', '사용 횟수', 'times', f.times, '예: 3회') + field('fNote', '비고', 'note', f.note) +
         '<label class="row" style="min-height:44px"><input type="checkbox" id="fVer" data-ch="addVer"' + (f.verified ? ' checked' : '') + ' style="width:22px;height:22px"> <span>라벨에서 파프리카 등록과 위 내용을 확인했습니다</span></label>' +
         '<p class="hint">확인하지 않으면 "확인 필요"로 저장되고 추천 순위에 들어가지 않습니다. 비워 둔 칸은 임의로 채우지 않습니다.</p>')) +
       '<button type="button" class="btn primary big" data-act="addSave">' + (S.add.editId ? '수정 저장' : '보유 목록에 저장') + '</button>' +
       (S.add.editId ? '<button type="button" class="btn" data-act="addCancel">취소</button>' : '') + '</div>';
   }
+  /** 실제 제품 뚜껑색 고르기. 분류 색(농약 종류로 정해짐)과 따로 저장한다. */
+  function capPicker(f) {
+    var cur = f.capColor || '';
+    var chips = [['', '']].concat(U.CAP_COLORS).map(function (c) {
+      return '<button type="button" class="chip sm' + (cur === c[0] ? ' on' : '') + '" data-act="addCap" data-v="' + esc(c[0]) + '">' + (c[0] ? '<i class="swatch" style="--sw:' + c[1] + '" aria-hidden="true"></i>' + esc(c[0]) : '미등록') + '</button>';
+    }).join('');
+    var diff = U.capDiffers(f.use, cur);
+    return '<div class="stack" style="gap:6px"><span class="field-label">실제 뚜껑색 (선택)</span><div class="row">' + chips + '</div>' +
+      '<span class="hint">분류 색은 농약 종류로 정해집니다. 여기에는 실제 제품 뚜껑 색만 기록합니다.' + (diff ? ' 지금 고른 색은 분류 색과 다릅니다.' : '') + '</span></div>';
+  }
+  A.addCap = function (t) { S.add.form.capColor = t.dataset.v; U.render(true); };
   function autoBox() {
     var f = S.add.form;
     if (!f || f.code || !f.brand.trim()) return '';
     var r = PE.lookupByName(f.brand);
     if (r.state === 'none') return '<p class="small muted">조회본에서 같은 제품명을 찾지 못했습니다. 확인된 내용만 입력하세요.</p>';
     return '<div class="stack" style="gap:6px"><span class="small">PSIS 조회본에서 찾았습니다. 맞는 제품을 누르면 자동 입력됩니다.</span>' + r.matches.slice(0, 6).map(function (m) {
-      return '<button type="button" class="sug" data-act="addLink" data-code="' + m.code + '"><span><b>' + esc(m.brand) + '</b> <span class="small muted">' + esc(m.item) + ' · ' + esc(m.company) + '</span></span><span class="pill plain">' + esc(m.moa || '작용기작 빈칸') + '</span></button>';
+      return '<button type="button" class="sug" data-act="addLink" data-code="' + m.code + '"><span><b>' + esc(m.brand) + '</b> <span class="small muted">' + esc(m.item) + ' · ' + esc(m.company) + '</span></span><span class="row" style="justify-content:flex-end">' + (m.use ? U.useChip(m.use) : '') + '<span class="pill plain">' + esc(m.moa || '작용기작 빈칸') + '</span></span></button>';
     }).join('') + '</div>';
   }
   function aiBox() {
@@ -3578,7 +3642,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     var isPaprika = /파프리카|단고추/.test(f.crop);
     var moa = PE.normalizeMoa(f.moa, f.use);
     return {
-      id: id, code: null, brand: f.brand.trim(), item: '', aiText: f.ai.trim(), moa: moa === null ? '' : moa, moaTyped: moa === null ? f.moa : '', use: f.use, note: f.note, cropText: f.crop,
+      id: id, code: null, brand: f.brand.trim(), item: '', aiText: f.ai.trim(), moa: moa === null ? '' : moa, moaTyped: moa === null ? f.moa : '', use: f.use, note: f.note, cropText: f.crop, capColor: f.capColor || '',
       verified: f.verified ? 'label' : 'none', createdAt: Date.now(),
       lines: isPaprika ? pests.map(function (p) { return { crop: '단고추류', pest: p, method: '경엽처리', dilution: f.dilution, amount: '', phiText: f.phi, timesText: f.times }; }) : []
     };
@@ -3590,7 +3654,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     var rec;
     if (f.code) {
       var old = U.D().products.filter(function (x) { return x.id === id; })[0] || {};
-      rec = Object.assign({}, old, { id: id, code: f.code, note: f.note });
+      rec = Object.assign({}, old, { id: id, code: f.code, note: f.note, capColor: f.capColor || '' });
     } else {
       rec = toManualRecord(f, id);
       if (rec.moaTyped) U.toast('작용기작 "' + rec.moaTyped + '"을(를) 기준표에서 찾지 못해 확인 필요로 저장합니다.', 'bad');
@@ -3894,7 +3958,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     r.products.forEach(function (doc) {
       var old = have.filter(function (x) { return x.brand === doc.brand || (doc.code && x.code === doc.code); })[0];
       var next = Object.assign({}, doc);
-      if (old) { next.id = old.id; next.note = old.note || ''; next.createdAt = old.createdAt; } else next.createdAt = Date.now();
+      if (old) { next.id = old.id; next.note = old.note || ''; next.createdAt = old.createdAt; if (old.capColor) next.capColor = old.capColor; } else next.createdAt = Date.now();
       if (!used[next.id]) { used[next.id] = 1; rows.push(next); }
     });
     var sprays = r.sprays.filter(function (s) { return !Store.data.sprays.some(function (x) { return x.id === s.id || x.date === s.date; }); });
@@ -4017,7 +4081,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
   }
   function recRow(s) {
     var eff = uniqSort(Object.keys(s.effects || {}).map(function (k) { return s.effects[k]; })).map(U.effectPill).join(' ');
-    var items = (s.items || []).map(function (i) { return '<div class="row"><span>' + esc(i.brand) + '</span>' + U.itemChips(i) + '</div>'; }).join('');
+    var items = (s.items || []).map(function (i) { return '<div class="row"><span>' + esc(i.brand) + '</span>' + (i.use ? U.useChip(i.use) : '') + U.itemChips(i) + '</div>'; }).join('');
     return '<button type="button" class="rec-row" data-act="recOpen" data-id="' + esc(s.id) + '"><div class="between"><b class="tnum">' + U.dateK(s.date) + '</b><span class="row">' + (s.mixed ? '<span class="pill plain">혼용</span>' : '') + effectStatus(s) + '</span></div>' +
       '<div class="small muted">' + esc((s.houses || []).join(', ')) + (s.houses && s.houses.length ? ' · ' : '') + esc((s.targets || []).join(', ') || '대상 미기재') + '</div>' + (eff ? '<div class="row">' + eff + '</div>' : '') + '<div class="stack" style="gap:4px">' + items + '</div></button>';
   }
@@ -4026,7 +4090,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     if (!s) return;
     var items = (s.items || []).map(function (i) {
       var parts = PE.itemParts(i).filter(function (p) { return !p.none; });
-      return '<div class="card stack" style="gap:4px"><b>' + esc(i.brand) + '</b><div class="small muted">' + esc(i.item || '') + '</div><div class="small">유효성분: ' + esc(parts.map(function (p) { return p.ai || p.aiEn; }).filter(Boolean).join(', ') || i.aiText || '확인 필요') + '</div><div class="row">' + U.itemChips(i) + '</div><div class="small">희석 ' + esc(i.dilution || '-') + ' · 사용량 ' + esc(i.amount || '-') + '</div></div>';
+      return '<div class="card stack" style="gap:6px"><div class="row"><b>' + esc(i.brand) + '</b>' + (i.use ? U.useChip(i.use) : '') + (i.pid && U.capOf(i.pid) ? U.capChip(U.capOf(i.pid), i.use) : '') + '</div><div class="small muted">' + esc(i.item || '') + '</div><div class="small">유효성분: ' + esc(parts.map(function (p) { return p.ai || p.aiEn; }).filter(Boolean).join(', ') || i.aiText || '확인 필요') + '</div><div class="row">' + U.itemChips(i) + '</div><div class="small">희석 ' + esc(i.dilution || '-') + ' · 사용량 ' + esc(i.amount || '-') + '</div></div>';
     }).join('');
     var eff = (s.targets || []).map(function (p) { return '<div class="row"><span>' + esc(p) + '</span>' + (U.effectPill(s.effects && s.effects[p]) || '<span class="pill warn">효과 입력 대기</span>') + '</div>'; }).join('');
     U.modal('<div class="stack"><div class="between"><div class="stack" style="gap:8px"><h2>' + U.dateK(s.date) + ' 방제</h2><span class="row"><span class="pill done">방제 완료</span>' + effectStatus(s) + '</span></div><button type="button" class="icon-btn" data-act="closeModal" aria-label="닫기">' + U.ic('no') + '</button></div>' +
@@ -4061,6 +4125,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
     var first = new Date(p[0], p[1] - 1, 1);
     var days = new Date(p[0], p[1], 0).getDate();
     var t = U.today();
+    var seenCat = {};
     var cells = '일월화수목금토'.split('').map(function (d) { return '<div class="dow">' + d + '</div>'; }).join('');
     for (var i = 0; i < first.getDay(); i++) cells += '<div class="day off"></div>';
     for (var d = 1; d <= days; d++) {
@@ -4068,16 +4133,17 @@ if(typeof module!=='undefined'&&module.exports)module.exports=root.PAPRIKA_REF;}
       var list = rows.filter(function (s) { return s.date === ds; });
       var dots = [];
       list.forEach(function (s) {
-        (s.items || []).forEach(function (it) {
-          PE.itemParts(it).forEach(function (x) { if (!x.none) dots.push(x.sys === 'FRAC' ? 'f' : x.sys === 'IRAC' ? 'i' : 'u'); });
-        });
+        (s.items || []).forEach(function (it) { dots.push(U.itemCat(it)); seenCat[U.itemCat(it)] = 1; });
       });
-      cells += '<button type="button" class="day' + (ds === t ? ' today' : '') + (ds === h.day ? ' sel' : '') + '" data-act="calDay" data-v="' + ds + '" aria-label="' + ds + ' 방제 ' + list.length + '건"><b>' + d + '</b><span class="dots">' + dots.slice(0, 6).map(function (c) { return '<i class="dot ' + c + '"></i>'; }).join('') + '</span></button>';
+      cells += '<button type="button" class="day' + (ds === t ? ' today' : '') + (ds === h.day ? ' sel' : '') + '" data-act="calDay" data-v="' + ds + '" aria-label="' + ds + ' 방제 ' + list.length + '건"><b>' + d + '</b><span class="dots">' + dots.slice(0, 6).map(function (c) { return '<i class="dot cat-' + c + '"></i>'; }).join('') + '</span></button>';
     }
     var inMonth = rows.filter(function (s) { return s.date.slice(0, 7) === h.month; });
     var shown = h.day ? rows.filter(function (s) { return s.date === h.day; }) : inMonth;
+    // 범례: 이 달에 나온 분류만, 없으면 살균제·살충제
+    var legend = U.CAT_LEGEND.filter(function (c) { return seenCat[c[0]]; });
+    if (!legend.length) legend = U.CAT_LEGEND.slice(0, 2);
     return '<div class="between" style="align-items:center"><button type="button" class="btn small" data-act="calMove" data-v="-1">이전 달</button><b class="tnum">' + p[0] + '년 ' + p[1] + '월 · ' + inMonth.length + '회</b><button type="button" class="btn small" data-act="calMove" data-v="1">다음 달</button></div>' +
-      '<div class="cal">' + cells + '</div><div class="legend"><span><i class="dot f"></i> 살균 작용기작</span><span><i class="dot i"></i> 살충 작용기작</span></div>' +
+      '<div class="cal">' + cells + '</div><div class="legend">' + legend.map(function (c) { return '<span><i class="dot cat-' + c[0] + '"></i> ' + c[1] + '</span>'; }).join('') + '</div>' +
       '<div class="stack">' + (shown.length ? shown.map(recRow).join('') : '<p class="muted">' + (h.day ? h.day + ' 기록이 없습니다.' : '이 달 기록이 없습니다.') + '</p>') + '</div>';
   }
   A.calMove = function (t) {
